@@ -1,95 +1,54 @@
+'use client';
 import Image from "next/image";
 import styles from "./page.module.css";
 
+import {useEffect, useState} from "react";
+import ListFood from "@/app/listfood";
+import ListDrink from "@/app/listdrink";
+
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    const [list, setList] = useState<{ type: string, name: string }[]>([]);
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+    //initialize list with shopping items
+    useEffect(() => {
+        setList([
+            {type: "food", name: "apple"},
+            {type: "food", name: "banana"},
+            {type: "food", name: "carrot"},
+            {type: "drink", name: "coffee"},
+            {type: "drink", name: "tea"},
+            {type: "drink", name: "milk"},
+        ]);
+    }, []);
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+    const add = ($event: any) => {
+        $event.preventDefault();
+        //get input value
+        const input = document.querySelector("input")!;
+        const value = input.value;
+        //get select value
+        const select = document.querySelector("select")!;
+        const type = select.value;
+        //add item to list
+        setList([...list, {type: type, name: value}]);
+    }
+    return (
+        <main className={styles.main}>
+            <h1>Courses</h1>
+            <div className={styles.container}>
+                <form className={`${styles.leftContainer} ${styles.form}`}>
+                    <input type="text" className={styles.input}/>
+                    <select className={styles.select}>
+                        <option value="food">Food</option>
+                        <option value="drink">Drink</option>
+                    </select>
+                    <button className={styles.btn} onClick={add}>Add</button>
+                </form>
+                <div className={styles.rightContainer}>
+                    <ListFood list={list}/>
+                    <ListDrink listdrink={list}/>
+                </div>
+            </div>
+        </main>
+    );
 }
